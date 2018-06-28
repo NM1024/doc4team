@@ -1,33 +1,20 @@
 package services
 
 import (
-	"encoding/json"
-	"errors"
 	"doc4team/models"
 	"doc4team/tools"
+	"encoding/json"
+	"errors"
 )
 
 type IServiceToMarkDown interface {
 	ApiDoc2MarkDown(models.ApiDoc) (string, error)
 }
 
-// var m *toMarkDown
-
-// func GetToMarkDownInstance() IToMarkDown {
-
-// 	m.once.Do(func() {
-// 		m = &toMarkDown{}
-// 	})
-// 	return m
-// }
-
-// func GetToMarkDownInstance() IServiceToMarkDown {
-// 	return &toMarkDown{}
-// }
-
 type toMarkDown struct {
 }
 
+// ApiDoc2MarkDown  models.ApiDoc to MD string
 func (r *toMarkDown) ApiDoc2MarkDown(ml models.ApiDoc) (string, error) {
 	var str string
 

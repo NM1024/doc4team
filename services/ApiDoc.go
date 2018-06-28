@@ -3,7 +3,6 @@ package services
 import (
 	"doc4team/dao"
 	"doc4team/models"
-	"doc4team/tools"
 )
 
 type IServiceApiDoc interface {
@@ -33,7 +32,7 @@ func (r *apiDoc) Create(ma models.ApiDoc) (int64, error) {
 
 	ma, err := dao.GetApiDocInstance().Insert(ma)
 	if err != nil {
-		tools.LogErr(err)
+		return 0, err
 	}
 	return ma.ApiDocid, nil
 }

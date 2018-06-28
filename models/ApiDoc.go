@@ -20,6 +20,7 @@ type ApiDoc struct {
 	DeletedAt time.Time `xorm:"deleted DATETIME" json:"deletedAt"`
 }
 
+// 设置对应的数据库表名称
 func (a *ApiDoc) TableName() string {
 	return "apidoc"
 }

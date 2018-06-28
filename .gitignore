@@ -13,3 +13,5 @@
 *.out
 
 /.vscode/
+web/debug
+web/.env

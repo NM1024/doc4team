@@ -1,20 +1,19 @@
 package controllers
 
 import (
+	"github.com/kataras/iris"
 	"github.com/kataras/iris/mvc"
 )
 
-// MovieController is our /movies controller.
+// HomeController localhost:6060/ 注意这里不是localhost:6060/home
+// 因为在注册此comtroller的时候并没有加home
 type HomeController struct {
-	// Our MovieService, it's an interface which
-	// is binded from the main application.
-	// Service services.ApiDetails
+	Ctx iris.Context
 }
 
+// Get  get:localhost:6060
 func (c *HomeController) Get() mvc.Result {
 	return mvc.View{
 		Name: "home/index.html",
 	}
-	// return mvc.Response{Path: "home/index.html"}
-	// ctx.View("home/index.html")
 }

@@ -11,6 +11,7 @@ import (
 
 var Xdb *xorm.Engine
 
+// xorm 初始化
 func init() {
 	var (
 		mysqlconnstr string
@@ -44,6 +45,7 @@ func init() {
 
 }
 
+// gorm 初始化
 //func init() {
 //	var (
 //		mysqlconnstr string
