@@ -36,6 +36,21 @@ func (c *DocController) GetCreate() mvc.Result {
 	}
 }
 
+// GetList get:localhost:6060/doc/list
+func (c *DocController) GetList() mvc.Result {
+
+	res, err := servicesL.ApiDoc.GetApiDocList()
+	if err != nil {
+		golog.Warn(err)
+		return badResponse("/", err, 400)
+	}
+
+	return mvc.View{
+		Name: "doc/list.html",
+		Data: iris.Map{"data": res},
+	}
+}
+
 // GetEditBy get:localhost:6060/doc/edit/{id}
 func (c *DocController) GetEditBy(id int64) mvc.Result {
 

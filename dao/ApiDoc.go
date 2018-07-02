@@ -1,25 +1,15 @@
 package dao
 
 import (
-	"errors"
 	"doc4team/models"
 	. "doc4team/tools"
-	"sync"
+	"errors"
 )
 
 type IDaoApiDoc interface {
 	Insert(models.ApiDoc) (models.ApiDoc, error)
 	GetApiDoc(int64) (models.ApiDoc, error)
-}
-
-var m IDaoApiDoc
-var once sync.Once
-
-func GetApiDocInstance() IDaoApiDoc {
-	once.Do(func() {
-		m = &apiDoc{}
-	})
-	return m
+	GetApiDocList() (map[int64]models.ApiDoc, error)
 }
 
 type apiDoc struct {
@@ -49,4 +39,14 @@ func (r *apiDoc) GetApiDoc(id int64) (models.ApiDoc, error) {
 		return models.ApiDoc{}, errors.New("无数据")
 	}
 	return *docmod, nil
+}
+
+func (r *apiDoc) GetApiDocList() (map[int64]models.ApiDoc, error) {
+	docmods := make(map[int64]models.ApiDoc)
+
+	err := Xdb.Find(docmods)
+	if err != nil {
+		return make(map[int64]models.ApiDoc), err
+	}
+	return docmods, nil
 }

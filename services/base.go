@@ -1,6 +1,9 @@
 package services
 
-import "sync"
+import (
+	"doc4team/dao"
+	"sync"
+)
 
 var once sync.Once
 var m *ServiceList
@@ -19,4 +22,10 @@ func GetInstance() *ServiceList {
 type ServiceList struct {
 	ApiDoc     IServiceApiDoc
 	ToMarkDown IServiceToMarkDown
+}
+
+var daoL *dao.DaoList
+
+func init() {
+	daoL = dao.GetInstance()
 }

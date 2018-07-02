@@ -394,10 +394,11 @@ var PR=win['PR']={'createSimpleLexer':createSimpleLexer,'registerLangHandler':re
   var markdown = markdownEl.textContent || markdownEl.innerText;
 
   var newNode = document.createElement('div');
-  newNode.className = 'container';
+  // newNode.className = 'container';
   newNode.id = 'content';
-  document.body.replaceChild(newNode, markdownEl);
-
+  // document.body.replaceChild(newNode, markdownEl);
+  markdownEl.parentNode.replaceChild(newNode, markdownEl);
+  
   // Insert navbar if there's none
   var newNode = document.createElement('div');
   newNode.className = 'navbar navbar-fixed-top';
