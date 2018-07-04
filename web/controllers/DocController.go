@@ -65,7 +65,15 @@ func (c *DocController) GetEditBy(id int64) mvc.Result {
 		return badResponse("/", err, 400)
 	}
 
+	used, unused, err := servicesL.DocTagMap.GetDocUsedAndUnusedTags(1, 10, id)
+	if err != nil {
+		golog.Warn(err)
+		return badResponse("/", err, 400)
+	}
+
 	damap["doc"] = res
+	damap["used"] = used
+	damap["unused"] = unused
 	return mvc.View{
 		Name: "doc/edit.html",
 		Data: iris.Map{"data": damap},
@@ -92,7 +100,7 @@ func (c *DocController) PostCreate() mvc.Result {
 	// 	return banReq("/", err, 400)
 	// }
 
-	res, err := servicesL.ApiDoc.Create(mapi)
+	res, err := servicesL.ApiDoc.Create(mapi, []models.DocTag{})
 
 	if err != nil {
 		golog.Warn(err)

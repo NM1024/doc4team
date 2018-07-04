@@ -16,7 +16,7 @@ func main() {
 	app.Logger().SetLevel("debug")
 
 	// 加载view模版
-	views := iris.HTML("./views", ".html")
+	views := iris.HTML("./views", ".html").Layout("_template/_layout.html")
 	// 加载模版函数
 	templateFunc(views)
 	app.RegisterView(views)

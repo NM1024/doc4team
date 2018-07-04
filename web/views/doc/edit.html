@@ -1,82 +1,99 @@
-<!doctype html>
-<html>
-
-<head>
-    {{ template "header" . }}
-</head>
-
-<body>
-    {{ template "top" }}
-    <div class="container">
-        <form method="POST" action="{{.data.pageform}}">
-            <fieldset>
-                <legend>{{.data.pagetitle}}</legend>
-                {{if .data.pageedit }}
-                <input type="hidden" name="ApiDocid" value="{{.data.doc.ApiDocid}}"> {{end}}
-                <div class="form-group">
-                    <label for="exampleInputEmail1">接口名称</label>
-                    <input type="text" class="form-control" name="Name" placeholder="Enter API Name" value="{{.data.doc.Name}}">
-                    <!-- <input type="text" class="form-control" name="Name"  aria-describedby="emailHelp" placeholder="Enter API Name" value="{{.data.doc.Name}}"> -->
-                    <!-- <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small> -->
-                </div>
-                <div class="form-group">
-                    <label for="exampleInputEmail1">版本</label>
-                    <input type="text" class="form-control" name="Version" placeholder="Enter API Version" value="{{.data.doc.Version}}">
-                    <!-- <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small> -->
-                </div>
-                <div class="form-group">
-                    <label for="exampleInputEmail1">接口地址</label>
-                    <input type="text" class="form-control" name="Address" placeholder="Enter API Address" value="{{.data.doc.Address}}">
-                    <!-- <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small> -->
-                </div>
-                <div class="form-group">
-                    <label for="exampleSelect1">请求方式</label>
-                    <select class="form-control" name="Method">
-                        {{$list:=HttpMethodList}} {{range $i, $v := $list}} {{if eq (Obj2String $.data.doc.Method) $v}}
+ 
+<form method="POST" action="{{.data.pageform}}">
+    <fieldset>
+        <legend>{{.data.pagetitle}}</legend>
+        {{if .data.pageedit }}
+        <input type="hidden" name="ApiDocid" value="{{.data.doc.ApiDocid}}"> {{end}}
+        <div class="form-group">
+            <label for="exampleInputEmail1">接口名称</label>
+            <input type="text" class="form-control" name="Name" placeholder="Enter API Name" value="{{.data.doc.Name}}">
+            <!-- <input type="text" class="form-control" name="Name"  aria-describedby="emailHelp" placeholder="Enter API Name" value="{{.data.doc.Name}}"> -->
+            <!-- <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small> -->
+        </div>
+        <div class="form-group">
+            <label for="exampleInputEmail1">版本</label>
+            <input type="text" class="form-control" name="Version" placeholder="Enter API Version" value="{{.data.doc.Version}}">
+            <!-- <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small> -->
+        </div>
+        <div class="form-group">
+            <label for="exampleInputEmail1">Tags</label> 
+            <div style="margin-top: 10px">
+                {{range $i, $v := .data.used}} 
+                    <span class="badge badge-dark">{{$v.Name}}</span>
+                {{end}} 
+                <!-- <span class="badge badge-primary">查询</span>
+                <span class="badge badge-secondary">文档</span>  -->
+            </div>
+            <input type="hidden" name="usedtags" >
+        </div>
+        <div class="form-group">
+            <div style="margin-top: 10px">
+                {{range $i, $v := .data.unused}} 
+                    <span class="badge badge-light">{{$v.Name}}</span>
+                {{end}}
+                <!-- <span class="badge badge-secondary">文档</span>
+                <span class="badge badge-success">POST</span>
+                <span class="badge badge-danger">Danger</span>
+                <span class="badge badge-warning">Warning</span>
+                <span class="badge badge-info">Info</span>
+                <span class="badge badge-light">Light</span>
+                <span class="badge badge-dark">Dark</span> -->
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="exampleInputEmail1">接口地址</label>
+            <input type="text" class="form-control" name="Address" placeholder="Enter API Address" value="{{.data.doc.Address}}">
+            <!-- <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small> -->
+        </div>
+        <div class="form-group">
+            <label for="exampleSelect1">请求方式</label>
+            <select class="form-control" name="Method">
+                {{$list:=HttpMethodList}} 
+                {{range $i, $v := $list}} 
+                    {{if eq (Obj2String $.data.doc.Method) $v}}
                         <option value="{{$v}}" selected>{{$v}}</option>
-                        {{end}}
+                    {{else}}
                         <option value="{{$v}}">{{$v}}</option>
-                        {{end}}
-                        <!-- <option value="GET">GET</option>
-                        <option value="POST">POST</option>
-                        <option value="PUT">PUT</option>
-                        <option value="DELETE">DELETE</option>
-                        <option value="HEAD">HEAD</option>
-                        <option value="OPTIONS">OPTIONS</option>
-                        <option value="PATCH">PATCH</option> -->
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="exampleInputEmail1">Query Parameters</label>
-                    <input type="text" class="form-control" name="Parameters" placeholder="Enter Query Parameters" value="{{.data.doc.Parameters}}">
-                    <!-- <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small> -->
-                </div>
-                <div class="form-group">
-                    <label for="exampleTextarea">Request Header</label>
-                    <textarea class="form-control" name="Header" rows="3">{{.data.doc.Header}}</textarea>
-                </div>
-                <div class="form-group">
-                    <label for="exampleTextarea">Request Body</label>
-                    <textarea class="form-control" name="Body" rows="3">{{.data.doc.Body}}</textarea>
-                </div>
-                <div class="form-group">
-                    <label for="exampleTextarea">Response Body</label>
-                    <textarea class="form-control" name="Response" rows="3">{{.data.doc.Response}}</textarea>
-                </div>
-                <div class="form-group">
-                    <label for="exampleTextarea">描述</label>
-                    <textarea class="form-control" name="Describe" rows="3">{{.data.doc.Describe}}</textarea>
-                </div>
-                <div class="form-group">
-                    <label for="exampleTextarea">备注</label>
-                    <textarea class="form-control" name="Remark" rows="3">{{.data.doc.Remark}}</textarea>
-                </div>
+                    {{end}}
+                {{end}}
+                <!-- <option value="GET">GET</option>
+                <option value="POST">POST</option>
+                <option value="PUT">PUT</option>
+                <option value="DELETE">DELETE</option>
+                <option value="HEAD">HEAD</option>
+                <option value="OPTIONS">OPTIONS</option>
+                <option value="PATCH">PATCH</option> -->
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="exampleInputEmail1">Query Parameters</label>
+            <input type="text" class="form-control" name="Parameters" placeholder="Enter Query Parameters" value="{{.data.doc.Parameters}}">
+            <!-- <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small> -->
+        </div>
+        <div class="form-group">
+            <label for="exampleTextarea">Request Header</label>
+            <textarea class="form-control" name="Header" rows="3">{{.data.doc.Header}}</textarea>
+        </div>
+        <div class="form-group">
+            <label for="exampleTextarea">Request Body</label>
+            <textarea class="form-control" name="Body" rows="3">{{.data.doc.Body}}</textarea>
+        </div>
+        <div class="form-group">
+            <label for="exampleTextarea">Response Body</label>
+            <textarea class="form-control" name="Response" rows="3">{{.data.doc.Response}}</textarea>
+        </div>
+        <div class="form-group">
+            <label for="exampleTextarea">描述</label>
+            <textarea class="form-control" name="Describe" rows="3">{{.data.doc.Describe}}</textarea>
+        </div>
+        <div class="form-group">
+            <label for="exampleTextarea">备注</label>
+            <textarea class="form-control" name="Remark" rows="3">{{.data.doc.Remark}}</textarea>
+        </div>
 
-                <button type="submit" class="btn btn-primary">Submit</button>
-            </fieldset>
-        </form>
-    </div>
-    {{template "footer"}}
-</body>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </fieldset>
+</form> 
+<script>
 
-</html>
+</script>

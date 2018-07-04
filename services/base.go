@@ -14,6 +14,8 @@ func GetInstance() *ServiceList {
 		m = &ServiceList{}
 		m.ApiDoc = &apiDoc{}
 		m.ToMarkDown = &toMarkDown{}
+		m.DocTag = &docTag{}
+		m.DocTagMap = &docTagMap{}
 	})
 	return m
 }
@@ -22,6 +24,8 @@ func GetInstance() *ServiceList {
 type ServiceList struct {
 	ApiDoc     IServiceApiDoc
 	ToMarkDown IServiceToMarkDown
+	DocTag     IServiceDocTag
+	DocTagMap  IServiceDocTagMap
 }
 
 var daoL *dao.DaoList
