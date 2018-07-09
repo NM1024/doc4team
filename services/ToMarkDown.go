@@ -27,6 +27,7 @@ func (r *toMarkDown) ApiDoc2MarkDown(ml models.ApiDoc) (string, error) {
 	var md = new(tools.MarkDown)
 	md.Title(ml.Name+ml.Version, 1).NewLines(2)
 	md.Title("API-URL:", 2).NewLines(2).Text(ml.Method + ":").CodeOneLine(ml.Address).NewLines(2)
+	// md.Title("Request Parameters:",2).NewLines(2).
 	md.Title("Request Headers:", 2).NewLines(2).Code(ml.Header, "json").NewLine().Table(jshead).NewLines(2)
 	md.Title("Request Body:", 2).NewLines(2).Code(ml.Body, "json").NewLines(2)
 	md.Title("说明:", 2).NewLines(2).Text(ml.Describe).NewLines(2)

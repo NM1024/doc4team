@@ -2,12 +2,15 @@ package services
 
 import (
 	"doc4team/models"
+	"strconv"
+	"strings"
 )
 
 type IServiceApiDoc interface {
-	Create(models.ApiDoc, []models.DocTag) (int64, error)
+	Create(models.ApiDoc, string) (int64, error)
 	GetApiDoc(int64) (models.ApiDoc, error)
 	GetApiDocList() (map[int64]models.ApiDoc, error)
+	Edit(models.ApiDoc, string) (int64, error)
 }
 
 // var once sync.Once
@@ -29,16 +32,21 @@ type apiDoc struct {
 }
 
 // Create
-func (r *apiDoc) Create(ma models.ApiDoc, tagsmod []models.DocTag) (int64, error) {
+func (r *apiDoc) Create(ma models.ApiDoc, tags string) (int64, error) {
 
-	tagsmap := make([]models.DocTagMap, 0)
+	tagsmap := make([]*models.DocTagMap, 0)
+	artags := strings.Split(tags, ",")
+	for _, tag := range artags {
+		if tag != "" {
+			tid, err := strconv.ParseInt(tag, 10, 64)
+			if err != nil {
+				return 0, err
+			}
+			tmap := new(models.DocTagMap)
+			tmap.TagId = tid
 
-	for _, tag := range tagsmod {
-		var tmap models.DocTagMap
-		tmap.ApiId = ma.ApiDocid
-		tmap.TagId = tag.TagId
-
-		tagsmap = append(tagsmap, tmap)
+			tagsmap = append(tagsmap, tmap)
+		}
 	}
 	ma, err := daoL.ApiDoc.Insert(ma, tagsmap)
 	if err != nil {
@@ -55,4 +63,29 @@ func (r *apiDoc) GetApiDoc(adid int64) (models.ApiDoc, error) {
 // GetApiDocList
 func (r *apiDoc) GetApiDocList() (map[int64]models.ApiDoc, error) {
 	return daoL.ApiDoc.GetApiDocList()
+}
+
+// Edit
+func (r *apiDoc) Edit(ma models.ApiDoc, tags string) (int64, error) {
+
+	tagsmap := make([]*models.DocTagMap, 0)
+	artags := strings.Split(tags, ",")
+	for _, tag := range artags {
+		if tag != "" {
+			tid, err := strconv.ParseInt(tag, 10, 64)
+			if err != nil {
+				return 0, err
+			}
+			tmap := new(models.DocTagMap)
+			tmap.ApiId = ma.ApiDocid
+			tmap.TagId = tid
+
+			tagsmap = append(tagsmap, tmap)
+		}
+	}
+	ma, err := daoL.ApiDoc.Update(ma, tagsmap)
+	if err != nil {
+		return 0, err
+	}
+	return ma.ApiDocid, nil
 }

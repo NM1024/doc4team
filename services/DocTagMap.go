@@ -39,7 +39,7 @@ func (r *docTagMap) GetDocUsedAndUnusedTags(pageindex int, pagesize int, docid i
 	start := pagesize * (pageindex - 1)
 	count := pagesize
 
-	used, err := m.DocTagMap.GetDocTagMapByDocId(docid)
+	used, err := r.GetDocTagMapByDocId(docid)
 	if err != nil {
 		return nil, nil, err
 	}

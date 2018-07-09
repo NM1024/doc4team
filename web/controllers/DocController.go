@@ -30,6 +30,13 @@ func (c *DocController) GetCreate() mvc.Result {
 	damap["pageedit"] = false
 	damap["pageform"] = "/doc/create"
 
+	unused, err := servicesL.DocTag.GetDocTagList(1, 10)
+	if err != nil {
+		golog.Warn(err)
+		return badResponse("/", err, 400)
+	}
+	damap["unused"] = unused
+
 	return mvc.View{
 		Name: "doc/edit.html",
 		Data: iris.Map{"data": damap},
@@ -95,12 +102,53 @@ func (c *DocController) PostCreate() mvc.Result {
 	mapi.Describe = c.Ctx.FormValue("Describe")
 	mapi.Remark = c.Ctx.FormValue("Remark")
 
+	tags := c.Ctx.FormValue("usedtags")
 	// if err := c.Ctx.ReadForm(&mapi); err != nil {
 	// 	tools.LogErr(err)
 	// 	return banReq("/", err, 400)
 	// }
 
-	res, err := servicesL.ApiDoc.Create(mapi, []models.DocTag{})
+	res, err := servicesL.ApiDoc.Create(mapi, tags)
+
+	if err != nil {
+		golog.Warn(err)
+		return badResponse("/", err, 400)
+	}
+
+	return mvc.Response{
+		Path: "/doc/" + strconv.FormatInt(res, 10),
+	}
+}
+
+// PostEdit get:localhost:6060/doc/edit
+func (c *DocController) PostEdit() mvc.Result {
+	mapi := models.ApiDoc{}
+
+	adid, err := strconv.ParseInt(c.Ctx.FormValue("ApiDocid"), 10, 64)
+	if err != nil {
+		golog.Warn(err)
+		return badResponse("/", err, 400)
+	}
+
+	mapi.ApiDocid = adid
+	mapi.Name = c.Ctx.FormValue("Name")
+	mapi.Version = c.Ctx.FormValue("Version")
+	mapi.Address = c.Ctx.FormValue("Address")
+	mapi.Method = c.Ctx.FormValue("Method")
+	mapi.Parameters = c.Ctx.FormValue("Parameters")
+	mapi.Header = c.Ctx.FormValue("Header")
+	mapi.Body = c.Ctx.FormValue("Body")
+	mapi.Response = c.Ctx.FormValue("Response")
+	mapi.Describe = c.Ctx.FormValue("Describe")
+	mapi.Remark = c.Ctx.FormValue("Remark")
+
+	tags := c.Ctx.FormValue("usedtags")
+	// if err := c.Ctx.ReadForm(&mapi); err != nil {
+	// 	tools.LogErr(err)
+	// 	return banReq("/", err, 400)
+	// }
+
+	res, err := servicesL.ApiDoc.Edit(mapi, tags)
 
 	if err != nil {
 		golog.Warn(err)
@@ -125,10 +173,20 @@ func (c *DocController) GetBy(id int64) mvc.Result {
 		golog.Warn(err)
 		return badResponse("/", err, 400)
 	}
+
+	usedtags, err := servicesL.DocTagMap.GetDocTagMapByDocId(id)
+	if err != nil {
+		golog.Warn(err)
+		// return badResponse("/", err, 400)
+	}
 	fmt.Println(mkc)
+
+	damap := make(map[string]interface{})
+	damap["mkc"] = template.HTML(mkc)
+	damap["used"] = usedtags
 	return mvc.View{
 		Name: "doc/detail.html",
-		Data: iris.Map{"mkdata": template.HTML(mkc)},
+		Data: iris.Map{"data": damap},
 	}
 }
 

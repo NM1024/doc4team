@@ -17,19 +17,19 @@
         </div>
         <div class="form-group">
             <label for="exampleInputEmail1">Tags</label> 
-            <div style="margin-top: 10px">
+            <div style="margin-top: 10px" class="usedlist">
                 {{range $i, $v := .data.used}} 
-                    <span class="badge badge-dark">{{$v.Name}}</span>
+                    <span class="badge badge-dark usedtag" tagid="{{$v.TagId}}" tagname="{{$v.Name}}">{{$v.Name}}</span>
                 {{end}} 
                 <!-- <span class="badge badge-primary">查询</span>
                 <span class="badge badge-secondary">文档</span>  -->
             </div>
-            <input type="hidden" name="usedtags" >
+            <input type="hidden" name="usedtags" class="usedtags">
         </div>
         <div class="form-group">
-            <div style="margin-top: 10px">
+            <div style="margin-top: 10px" class="unusedlist">
                 {{range $i, $v := .data.unused}} 
-                    <span class="badge badge-light">{{$v.Name}}</span>
+                    <span class="badge badge-light unusedtag" tagid="{{$v.TagId}}" tagname="{{$v.Name}}">{{$v.Name}}</span>
                 {{end}}
                 <!-- <span class="badge badge-secondary">文档</span>
                 <span class="badge badge-success">POST</span>
@@ -95,5 +95,32 @@
     </fieldset>
 </form> 
 <script>
+    $(function () {
+        setUsedTags();
 
+        function choose() {
+            var tid = $(this).attr("tagid");
+            var tagname = $(this).attr("tagname");
+            if ($(this).hasClass("unusedtag")) {
+                $(this).remove();
+                $(".usedlist").append("<span class=\"badge badge-dark usedtag\" tagid=\"" + tid + "\" tagname=\"" + tagname + "\">" + tagname + "</span> ");
+            } else if ($(this).hasClass("usedtag")) {
+                $(this).remove();
+                $(".unusedlist").append("<span class=\"badge badge-light unusedtag\" tagid=\"" + tid + "\" tagname=\"" + tagname + "\">" + tagname + "</span> ");               
+            }
+            setUsedTags(); 
+        }
+          
+        $(".usedlist").on('click',".usedtag", choose);
+        $(".unusedlist").on('click',".unusedtag" ,choose);
+    })
+
+    function setUsedTags() {
+        $(".usedtags").val("");
+        var usedtags = "";
+        $(".usedtag").each(function (i, v) {
+            usedtags += $(v).attr("tagid") + ","
+        });
+        $(".usedtags").val(usedtags);    
+    }
 </script>
