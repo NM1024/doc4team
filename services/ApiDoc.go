@@ -10,6 +10,7 @@ type IServiceApiDoc interface {
 	Create(models.ApiDoc, string) (int64, error)
 	GetApiDoc(int64) (models.ApiDoc, error)
 	GetApiDocList() (map[int64]models.ApiDoc, error)
+	SearchApiDoc(string, string) (map[int64]models.ApiDoc, error)
 	Edit(models.ApiDoc, string) (int64, error)
 }
 
@@ -88,4 +89,21 @@ func (r *apiDoc) Edit(ma models.ApiDoc, tags string) (int64, error) {
 		return 0, err
 	}
 	return ma.ApiDocid, nil
+}
+
+// SearchApiDoc
+func (r *apiDoc) SearchApiDoc(keyword string, tags string) (map[int64]models.ApiDoc, error) {
+	doctags := make([]int64, 0)
+	artags := strings.Split(tags, ",")
+	for _, tag := range artags {
+		if tag != "" {
+			tid, err := strconv.ParseInt(tag, 10, 64)
+			if err != nil {
+				return nil, err
+			}
+			doctags = append(doctags, tid)
+		}
+	}
+
+	return daoL.ApiDoc.SearchApiDoc(keyword, doctags)
 }

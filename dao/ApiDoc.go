@@ -4,6 +4,8 @@ import (
 	"doc4team/models"
 	. "doc4team/tools"
 	"errors"
+
+	"github.com/go-xorm/builder"
 )
 
 type IDaoApiDoc interface {
@@ -11,6 +13,7 @@ type IDaoApiDoc interface {
 	GetApiDoc(int64) (models.ApiDoc, error)
 	GetApiDocList() (map[int64]models.ApiDoc, error)
 	Update(models.ApiDoc, []*models.DocTagMap) (models.ApiDoc, error)
+	SearchApiDoc(string, []int64) (map[int64]models.ApiDoc, error)
 }
 
 type apiDoc struct {
@@ -141,4 +144,13 @@ func (r *apiDoc) Update(docmod models.ApiDoc, tagmap []*models.DocTagMap) (model
 	}
 
 	return docmod, nil
+}
+
+func (r *apiDoc) SearchApiDoc(keyword string, tags []int64) (map[int64]models.ApiDoc, error) {
+	docmods := make(map[int64]models.ApiDoc)
+	err := Xdb.Where(builder.Like{"name", keyword}.Or(builder.Like{"remark", keyword}).Or(builder.Like{"`describe`", keyword}).Or(builder.Like{"address", keyword})).In("api_id", builder.Select("api_id").From("doctagmap").Where(builder.In("tag_id", tags)).GroupBy("api_id")).Find(docmods)
+	if err != nil {
+		return nil, err
+	}
+	return docmods, nil
 }

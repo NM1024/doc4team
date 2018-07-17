@@ -19,7 +19,7 @@
             <label for="exampleInputEmail1">Tags</label> 
             <div style="margin-top: 10px" class="usedlist">
                 {{range $i, $v := .data.used}} 
-                    <span class="badge badge-dark usedtag" tagid="{{$v.TagId}}" tagname="{{$v.Name}}">{{$v.Name}}</span>
+                    <span class="badge badge-dark usedtag" style="cursor: pointer;"  tagid="{{$v.TagId}}" tagname="{{$v.Name}}">{{$v.Name}}</span>
                 {{end}} 
                 <!-- <span class="badge badge-primary">查询</span>
                 <span class="badge badge-secondary">文档</span>  -->
@@ -29,7 +29,7 @@
         <div class="form-group">
             <div style="margin-top: 10px" class="unusedlist">
                 {{range $i, $v := .data.unused}} 
-                    <span class="badge badge-light unusedtag" tagid="{{$v.TagId}}" tagname="{{$v.Name}}">{{$v.Name}}</span>
+                    <span class="badge badge-light unusedtag" style="cursor: pointer;" tagid="{{$v.TagId}}" tagname="{{$v.Name}}">{{$v.Name}}</span>
                 {{end}}
                 <!-- <span class="badge badge-secondary">文档</span>
                 <span class="badge badge-success">POST</span>
@@ -103,10 +103,10 @@
             var tagname = $(this).attr("tagname");
             if ($(this).hasClass("unusedtag")) {
                 $(this).remove();
-                $(".usedlist").append("<span class=\"badge badge-dark usedtag\" tagid=\"" + tid + "\" tagname=\"" + tagname + "\">" + tagname + "</span> ");
+                $(".usedlist").append("<span class=\"badge badge-dark usedtag\" style=\"cursor: pointer;\" tagid=\"" + tid + "\" tagname=\"" + tagname + "\">" + tagname + "</span> ");
             } else if ($(this).hasClass("usedtag")) {
                 $(this).remove();
-                $(".unusedlist").append("<span class=\"badge badge-light unusedtag\" tagid=\"" + tid + "\" tagname=\"" + tagname + "\">" + tagname + "</span> ");               
+                $(".unusedlist").append("<span class=\"badge badge-light unusedtag\" style=\"cursor: pointer;\" tagid=\"" + tid + "\" tagname=\"" + tagname + "\">" + tagname + "</span> ");               
             }
             setUsedTags(); 
         }
@@ -119,7 +119,7 @@
         $(".usedtags").val("");
         var usedtags = "";
         $(".usedtag").each(function (i, v) {
-            usedtags += $(v).attr("tagid") + ","
+            usedtags += $(v).attr("tagid") + ",";
         });
         $(".usedtags").val(usedtags);    
     }
